@@ -2,6 +2,12 @@
 
 "QuoteVault" is a modern Kotlin Multiplatform (KMP) application designed to deliver daily inspiration right to your fingertips. Built with 100% Compose UI, it targets Android, iOS, and Desktop platforms, providing a consistent and delightful user experience across all devices.
 
+<div align="center">
+  <img src="screenshots/android.png" alt="Android" width="200"/>
+  <img src="screenshots/desktop.png" alt="Desktop" width="400"/>
+  <img src="screenshots/ios.png" alt="iOS" width="200"/>
+</div>
+
 ## ✨ Features
 
 * **Multiplatform Support:** Seamlessly runs on Android, iOS, and Desktop.
@@ -65,7 +71,7 @@ To get this project up and running on your local machine, follow these steps:
 ### Clone the Repository
 
 ```
-git clone [https://github.com/hemantbeast/QuoteVault-KMP.git](https://github.com/hemantbeast/QuoteVault-KMP.git)
+git clone https://github.com/hemantbeast/QuoteVault-KMP.git
 cd QuoteVault
 ```
 
