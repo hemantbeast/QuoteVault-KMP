@@ -1,0 +1,13 @@
+<resources>
+    <string name="quote_vault">QuoteVault</string>
+    <string name="next">Next</string>
+    <string name="copy">Copy</string>
+    <string name="loading">Loading...</string>
+    <string name="empty">Empty</string>
+    <string name="error">Error</string>
+    <string name="refresh">Refresh</string>
+    <string name="retry">Retry</string>
+    <string name="something_went_wrong">Oops! Something went wrong</string>
+    <string name="nothing_to_show">There's nothing to show right now</string>
+    <string name="no_data_available">No data available</string>
+</resources>
