@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -31,6 +33,7 @@ kotlin {
     }
 
     jvm("desktop")
+    jvmToolchain(21)
 
     sourceSets {
         val desktopMain by getting
@@ -58,6 +61,7 @@ kotlin {
             // Kotlinx
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
 
             // Koin
             implementation(libs.koin.core)
@@ -70,6 +74,10 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+
+            // Room Database
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
 
             // Shimmer
             implementation(libs.shimmer)
@@ -124,6 +132,12 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
     implementation(libs.kotlinx.coroutines.android)
+
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspDesktop", libs.room.compiler)
 }
 
 compose.desktop {
@@ -136,4 +150,8 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }

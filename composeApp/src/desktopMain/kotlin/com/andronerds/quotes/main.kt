@@ -2,15 +2,14 @@ package com.andronerds.quotes
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.andronerds.quotes.di.appModule
-import com.andronerds.quotes.di.repositoryModule
-import com.andronerds.quotes.di.serviceModule
+import com.andronerds.quotes.di.*
 import org.koin.core.context.startKoin
 import java.awt.Dimension
 
 fun main() = application {
     startKoin {
         modules(
+            databaseModule,
             serviceModule,
             repositoryModule,
             appModule,
