@@ -5,5 +5,5 @@ import com.andronerds.quotes.domain.repositories.QuoteRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<QuoteRepository> { QuoteRepositoryImpl(get()) }
+    single<QuoteRepository> { QuoteRepositoryImpl(get(), get()) }
 }

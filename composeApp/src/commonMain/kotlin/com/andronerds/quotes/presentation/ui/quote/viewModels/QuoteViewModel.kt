@@ -19,8 +19,15 @@ class QuoteViewModel(private val repository: QuoteRepository): ScreenModel {
     private val _uiState = MutableStateFlow<UiState<QuoteModel>>(UiState.Loading)
     val uiState: StateFlow<UiState<QuoteModel>> = _uiState.asStateFlow()
 
+    private val _saved = MutableStateFlow(false)
+    val saved: StateFlow<Boolean> = _saved.asStateFlow()
+
     fun getQuote() {
         screenModelScope.launch {
+            if (_saved.value) {
+                _saved.value = false
+            }
+
             if (!_uiState.value.isLoading()) {
                 _uiState.value = UiState.Loading
             }
@@ -53,6 +60,24 @@ class QuoteViewModel(private val repository: QuoteRepository): ScreenModel {
         screenModelScope.launch {
             val item = _uiState.value.getSuccessData()
             shareText("\"${item.content}\"\n- ${item.author}", getString(Res.string.quote_vault))
+        }
+    }
+
+    fun saveQuote() {
+        if (_uiState.value.isLoading() || _uiState.value.isError()) {
+            return
+        }
+
+        screenModelScope.launch {
+            val item = _uiState.value.getSuccessData()
+
+            if (_saved.value) {
+                _saved.value = false
+                repository.removeQuote(item)
+            } else {
+                _saved.value = true
+                repository.saveQuote(item)
+            }
         }
     }
 }

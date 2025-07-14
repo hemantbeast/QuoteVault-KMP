@@ -4,4 +4,8 @@ import com.andronerds.quotes.data.models.QuoteModel
 
 interface QuoteRepository {
     suspend fun getQuote(): Result<QuoteModel>
+
+    suspend fun saveQuote(quote: QuoteModel)
+
+    suspend fun removeQuote(quote: QuoteModel)
 }

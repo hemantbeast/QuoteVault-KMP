@@ -53,6 +53,10 @@ fun QuoteTags(
             return@FlowRow
         }
 
+        if (tags.isEmpty()) {
+            return@FlowRow
+        }
+
         tags.forEach { tag ->
             TagChip(tag = tag)
         }

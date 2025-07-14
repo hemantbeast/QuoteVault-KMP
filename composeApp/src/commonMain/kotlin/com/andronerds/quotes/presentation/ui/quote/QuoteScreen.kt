@@ -40,6 +40,7 @@ class QuoteScreen: Screen {
 
         val viewModel = koinScreenModel<QuoteViewModel>()
         val uiState = viewModel.uiState.collectAsState()
+        val saved = viewModel.saved.collectAsState()
 
         LaunchedEffect(Unit) {
             viewModel.getQuote()
@@ -70,7 +71,14 @@ class QuoteScreen: Screen {
                         .fillMaxWidth()
                         .weight(2f)
                 ) {
-                    QuoteCard(uiState = uiState.value)
+                    QuoteCard(
+                        uiState = uiState.value,
+                        saved = saved.value,
+                        onSaved = {
+                            viewModel.saveQuote()
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                        }
+                    )
                     Spacer(modifier = Modifier.height(12.dp))
                     UiStateHandler(
                         state = uiState.value,

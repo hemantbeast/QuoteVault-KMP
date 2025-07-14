@@ -1,9 +1,15 @@
 package com.andronerds.quotes.presentation.ui.quote.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,8 +33,11 @@ import com.valentinilk.shimmer.shimmer
 @Composable
 fun QuoteCard(
     uiState: UiState<QuoteModel>,
+    saved: Boolean,
+    onSaved: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val scrollState = rememberScrollState()
     val screenSize = ScreenUtils.getSize()
 
     Box(
@@ -52,6 +61,7 @@ fun QuoteCard(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(scrollState)
                 .padding(24.dp)
         ) {
             UiStateHandler(
@@ -104,6 +114,21 @@ fun QuoteCard(
                     author = quote.author ?: "",
                 )
             }
+        }
+        IconButton(
+            onClick = onSaved,
+            modifier = Modifier.align(Alignment.BottomEnd)
+        ) {
+            val icon = if (saved) {
+                Icons.Filled.Bookmark
+            } else {
+                Icons.Filled.BookmarkBorder
+            }
+
+            Icon(
+                imageVector = icon,
+                contentDescription = "Save Quote"
+            )
         }
     }
 }
