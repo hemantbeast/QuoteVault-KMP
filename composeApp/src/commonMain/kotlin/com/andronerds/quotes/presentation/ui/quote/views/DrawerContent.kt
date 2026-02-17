@@ -24,14 +24,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.andronerds.quotes.presentation.theme.lightLavender
+import com.andronerds.quotes.presentation.theme.lightPurple
+import com.andronerds.quotes.presentation.theme.primaryPurple
+import com.andronerds.quotes.presentation.theme.shadowBlack
+import com.andronerds.quotes.presentation.theme.surfaceWhite
+import com.andronerds.quotes.presentation.theme.textPrimaryDark
+import com.andronerds.quotes.presentation.theme.textSecondaryGray
+import com.andronerds.quotes.presentation.theme.transparent
 import com.andronerds.quotes.presentation.ui.saved.SavedScreen
 import com.andronerds.quotes.utils.shareText
 import org.jetbrains.compose.resources.stringResource
@@ -153,10 +161,12 @@ private fun DrawerHeader() {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.secondaryContainer
-                    )
+                        lightLavender,
+                        lightPurple.copy(alpha = 0.9f),
+                        primaryPurple.copy(alpha = 0.8f),
+                    ),
+                    startY = 0f,
+                    endY = Float.POSITIVE_INFINITY
                 )
             )
     ) {
@@ -167,18 +177,18 @@ private fun DrawerHeader() {
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.Start
         ) {
-            // User Avatar
+            // User Avatar with white background for consistency
             Box(
                 modifier = Modifier
                     .size(64.dp)
                     .shadow(
-                        elevation = 8.dp,
+                        elevation = 4.dp,
                         shape = CircleShape,
-                        ambientColor = Color.Black.copy(alpha = 0.3f),
-                        spotColor = Color.Black.copy(alpha = 0.3f)
+                        ambientColor = shadowBlack.copy(alpha = 0.2f),
+                        spotColor = shadowBlack.copy(alpha = 0.2f)
                     )
                     .background(
-                        color = MaterialTheme.colorScheme.surface,
+                        color = surfaceWhite,
                         shape = CircleShape
                     )
                     .padding(4.dp),
@@ -188,20 +198,20 @@ private fun DrawerHeader() {
                     imageVector = Icons.Filled.Person,
                     contentDescription = null,
                     modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = primaryPurple
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // App Name
+            // App Name - dark text for contrast on light background
             Text(
                 text = stringResource(Res.string.quote_vault),
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 0.5.sp
                 ),
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = textPrimaryDark
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -210,7 +220,7 @@ private fun DrawerHeader() {
             Text(
                 text = stringResource(Res.string.daily_inspiration),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                color = textSecondaryGray
             )
         }
     }
@@ -228,7 +238,7 @@ private fun DrawerMenuItem(
         targetValue = if (isSelected) {
             MaterialTheme.colorScheme.primaryContainer
         } else {
-            Color.Transparent
+            transparent
         },
         label = "background_color"
     )

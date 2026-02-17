@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -42,6 +43,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.andronerds.quotes.data.database.entities.QuoteEntity
 import com.andronerds.quotes.presentation.components.UiState
 import com.andronerds.quotes.presentation.components.UiStateHandler
+import com.andronerds.quotes.presentation.theme.shimmerLightGray
+import com.andronerds.quotes.presentation.theme.transparent
 import com.andronerds.quotes.presentation.ui.quote.views.TagChip
 import com.andronerds.quotes.presentation.ui.saved.viewModels.SavedViewModel
 import com.andronerds.quotes.utils.ScreenUtils
@@ -217,7 +220,7 @@ private fun DeleteBackground(
     val color = if (swipeDismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
         MaterialTheme.colorScheme.error
     } else {
-        Color.Transparent
+        transparent
     }
 
     Box(
@@ -240,19 +243,20 @@ private fun SavedQuoteCard(
     quote: QuoteEntity,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(16.dp),
-                ambientColor = Color.Black.copy(alpha = 0.2f),
-                spotColor = Color.Black.copy(alpha = 0.2f)
-            )
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(16.dp)
-            )
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 6.dp
+        ),
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
     ) {
         Column(
             modifier = Modifier
@@ -351,7 +355,7 @@ private fun SavedQuoteShimmerCard() {
             .height(200.dp)
             .shimmer()
             .background(
-                color = Color.LightGray,
+                color = shimmerLightGray,
                 shape = RoundedCornerShape(16.dp)
             )
     )

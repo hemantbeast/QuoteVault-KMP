@@ -9,13 +9,13 @@ import com.materialkolor.rememberDynamicMaterialThemeState
 
 @Composable
 fun AppTheme(
-    seedColor: Color = blueColor,
+    seedColor: Color = primaryPurple,
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val dynamicThemeState = rememberDynamicMaterialThemeState(
         primary = seedColor,
-        isDark = false,
+        isDark = darkTheme,
         style = PaletteStyle.FruitSalad,
     )
 

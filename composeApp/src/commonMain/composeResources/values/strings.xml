@@ -25,4 +25,6 @@
     <string name="share_app">Share App</string>
     <string name="version">Version 1.0.0</string>
     <string name="made_with_love">Made with ❤️ using Kotlin Multiplatform</string>
+    <string name="inspiration_at_fingertips">Inspiration at your fingertips</string>
+    <string name="loading_dots">Loading</string>
 </resources>
