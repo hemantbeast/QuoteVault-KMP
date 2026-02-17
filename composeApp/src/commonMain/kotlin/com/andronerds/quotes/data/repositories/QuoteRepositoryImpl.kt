@@ -1,11 +1,13 @@
 package com.andronerds.quotes.data.repositories
 
 import com.andronerds.quotes.data.database.dao.QuoteDao
+import com.andronerds.quotes.data.database.entities.QuoteEntity
 import com.andronerds.quotes.data.models.ApiException
 import com.andronerds.quotes.data.models.QuoteModel
 import com.andronerds.quotes.data.services.QuoteService
 import com.andronerds.quotes.domain.mappers.toEntity
 import com.andronerds.quotes.domain.repositories.QuoteRepository
+import kotlinx.coroutines.flow.Flow
 
 internal class QuoteRepositoryImpl(
     private val quoteService: QuoteService,
@@ -36,5 +38,14 @@ internal class QuoteRepositoryImpl(
     override suspend fun removeQuote(quote: QuoteModel) {
         val entity = quote.toEntity()
         quoteDao.delete(entity)
+    }
+
+    // Remove quote entity from database directly
+    override suspend fun removeQuoteEntity(quote: QuoteEntity) {
+        quoteDao.delete(quote)
+    }
+
+    override fun getSavedQuotes(): Flow<List<QuoteEntity>> {
+        return quoteDao.getAll()
     }
 }

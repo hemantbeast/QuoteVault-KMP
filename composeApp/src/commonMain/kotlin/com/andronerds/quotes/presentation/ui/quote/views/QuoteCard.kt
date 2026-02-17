@@ -43,7 +43,7 @@ fun QuoteCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 200.dp, max = 300.dp)
+            .heightIn(min = 200.dp, max = 400.dp)
             .padding(24.dp)
             .shadow(
                 elevation = 8.dp,

@@ -15,7 +15,7 @@ fun AppTheme(
 ) {
     val dynamicThemeState = rememberDynamicMaterialThemeState(
         primary = seedColor,
-        isDark = darkTheme,
+        isDark = false,
         style = PaletteStyle.FruitSalad,
     )
 

@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -20,11 +22,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import com.andronerds.quotes.presentation.components.UiStateHandler
 import com.andronerds.quotes.presentation.ui.quote.viewModels.QuoteViewModel
+import com.andronerds.quotes.presentation.ui.quote.views.DrawerContent
 import com.andronerds.quotes.presentation.ui.quote.views.QuoteCard
 import com.andronerds.quotes.presentation.ui.quote.views.QuoteTags
 import com.dokar.sonner.ToastType
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.rememberToasterState
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import quotes.composeapp.generated.resources.Res
@@ -36,7 +40,10 @@ class QuoteScreen: Screen {
     @Preview
     override fun Content() {
         val hapticFeedback = LocalHapticFeedback.current
+        val scope = rememberCoroutineScope()
+
         val toaster = rememberToasterState()
+        val drawerState = rememberDrawerState(DrawerValue.Closed)
 
         val viewModel = koinScreenModel<QuoteViewModel>()
         val uiState = viewModel.uiState.collectAsState()
@@ -46,121 +53,148 @@ class QuoteScreen: Screen {
             viewModel.getQuote()
         }
 
-        Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(Res.string.quote_vault),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                )
-            }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                Spacer(modifier = Modifier.weight(0.5f))
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(2f)
-                ) {
-                    QuoteCard(
-                        uiState = uiState.value,
-                        saved = saved.value,
-                        onSaved = {
-                            viewModel.saveQuote()
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = true,
+            drawerContent = {
+                ModalDrawerSheet {
+                    DrawerContent(
+                        currentRoute = "home",
+                        onCloseDrawer = {
+                            scope.launch { drawerState.close() }
                         }
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    UiStateHandler(
-                        state = uiState.value,
-                        loading = {
+                }
+            }
+        ) {
+            Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = {
+                            Text(
+                                text = stringResource(Res.string.quote_vault),
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = {
+                                    scope.launch { drawerState.open() }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Menu,
+                                    contentDescription = "Menu"
+                                )
+                            }
+                        },
+                    )
+                }
+            ) { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    Spacer(modifier = Modifier.weight(0.5f))
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(2f)
+                    ) {
+                        QuoteCard(
+                            uiState = uiState.value,
+                            saved = saved.value,
+                            onSaved = {
+                                viewModel.saveQuote()
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        UiStateHandler(
+                            state = uiState.value,
+                            loading = {
+                                QuoteTags(
+                                    tags = listOf(),
+                                    isLoading = true,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        ) { quote ->
                             QuoteTags(
-                                tags = listOf(),
-                                isLoading = true,
+                                tags = quote.tags ?: listOf(),
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
-                    ) { quote ->
-                        QuoteTags(
-                            tags = quote.tags ?: listOf(),
-                            modifier = Modifier.fillMaxWidth()
-                        )
                     }
-                }
-                Spacer(modifier = Modifier.weight(0.5f))
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    // Copy Button
-                    FilledIconButton(
-                        onClick = {
-                            viewModel.copyQuote()
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    Spacer(modifier = Modifier.weight(0.5f))
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        // Copy Button
+                        FilledIconButton(
+                            onClick = {
+                                viewModel.copyQuote()
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
 
-                            toaster.show(
-                                message = "Copied to clipboard.",
-                                type = ToastType.Normal,
+                                toaster.show(
+                                    message = "Copied to clipboard.",
+                                    type = ToastType.Normal,
+                                )
+                            },
+                            modifier = Modifier.size(48.dp),
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
                             )
-                        },
-                        modifier = Modifier.size(48.dp),
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.ContentCopy,
-                            contentDescription = "Copy Quote",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ContentCopy,
+                                contentDescription = "Copy Quote",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
 
-                    // Share Button
-                    FilledIconButton(
-                        onClick = {
-                            viewModel.shareQuote()
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                        },
-                        modifier = Modifier.size(48.dp),
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Share,
-                            contentDescription = "Share Quote",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                        // Share Button
+                        FilledIconButton(
+                            onClick = {
+                                viewModel.shareQuote()
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            },
+                            modifier = Modifier.size(48.dp),
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Share,
+                                contentDescription = "Share Quote",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
 
-                    // Next Button
-                    FilledIconButton(
-                        onClick = {
-                            viewModel.getQuote()
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                        },
-                        modifier = Modifier.size(48.dp),
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.NavigateNext,
-                            contentDescription = "Next Quote",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
+                        // Next Button
+                        FilledIconButton(
+                            onClick = {
+                                viewModel.getQuote()
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            },
+                            modifier = Modifier.size(48.dp),
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.NavigateNext,
+                                contentDescription = "Next Quote",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
-                Spacer(modifier = Modifier.height(10.dp))
             }
         }
 

@@ -64,7 +64,7 @@ fun QuoteTags(
 }
 
 @Composable
-private fun TagChip(tag: String) {
+fun TagChip(tag: String) {
     Box(
         modifier = Modifier
             .padding(4.dp)
